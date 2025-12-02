@@ -5,6 +5,7 @@ format: html
 editor: visual
 ---
 
+#1
 
 ## Question 1
 
@@ -57,6 +58,28 @@ grades <- read_delim(
   delim = ";",
   na = "$"
 )
+
+```
+# 2 Student POpoulation analysis
+
+## Question 5
+
+```{r}
+library(ggplot2)
+
+students %>%
+  count(group) %>%
+  ggplot(aes(x = group, y = n)) +
+  geom_col()
+```
+
+## Question 6
+
+```{r}
+students %>%
+  count(group, sex) %>%
+  ggplot(aes(x = group, y = n, fill = sex)) +
+  geom_col()
 
 ```
 
