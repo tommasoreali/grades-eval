@@ -345,9 +345,18 @@ all_avg_wide %>%
 ## Question 20
 
 ```{r}
+two_courses <-
+  avg_per_course %>%
+  filter(course %in% c("Astrology and Celestial Navigation",
+                       "Alchemy and Hermetic Philosophy")) %>%
+  select(id, course, mean_grade) %>%
+  tidyr::pivot_wider(
+    names_from = course,
+    values_from = mean_grade
+  )
 
 ggplot(two_courses,
-       aes(x= `Egyptian Mythology and Religion`, y = `Alchemy and Hermetic Philosophy`)) +
+       aes(x= "Egyptian Mythology and Religion", y = "Alchemy and Hermetic Philosophy")) +
   geom_point(alpha = 0.6) +
   coord_equal() +
   theme_bw()+
@@ -446,12 +455,55 @@ ggplot(final_grades,
 ## Question 26
 
 ```{r}
+cond1 <- avg_per_course %>%
+  summarise(min_course_avg = min(mean_grade), .by = id) %>%
+  mutate(cond1 = min_course_avg >= 5)
+
+cond2 <- avg_per_course %>%
+  summarise(sem_avg = mean(mean_grade), .by = c(id, semester)) %>%
+  summarise(min_sem_avg = min(sem_avg), .by = id) %>%
+  mutate(cond2 = min_sem_avg >= 10)
+
+student_pass <- students %>%
+  select(id, group) %>%
+  left_join(cond1, by = "id") %>%
+  left_join(cond2, by = "id") %>%
+  mutate(pass = cond1 & cond2) %>%
+  select(id, group, pass)
+
 
 ```
 
 ## Question 27
 
 ```{r}
+n_not_pass_10 <-
+  final_grades %>%
+  left_join(student_pass, by = "id") %>%
+  filter(!pass, final_grade >= 10) %>%
+  nrow()
+
+n_not_pass_10
+```
+
+There are `r n_not_pass_10` students who do not pass but have a final grade
+larger or equal to 10.
+
+Q
+## Question 28
+
+```{r}
+pass_rate_group <-
+  student_pass %>%
+  summarise(pass_rate = mean(pass), .by = group)
+
+ggplot(pass_rate_group,
+       aes(x = factor(group), y = pass_rate)) +
+  geom_col() +
+  labs(
+    x = "Group",
+    y = "Pass rate"
+  )
 
 ```
 
