@@ -4,3 +4,29 @@ author: "Tommaso Reali"
 format: html
 editor: visual
 ---
+
+
+## Question 1
+
+```{r}
+library(readr)
+library(dplyr)
+library(here)
+here::i_am("grades-eval.Rproj")
+courses <- read_csv(here("courses.csv"))
+
+
+
+```
+
+## Question 2
+
+```{r}
+library(knitr)
+
+courses %>%
+  arrange(course) %>%
+  kable()
+
+```
+
