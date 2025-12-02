@@ -30,3 +30,33 @@ courses %>%
 
 ```
 
+## Question 3
+
+```{r}
+library(readr)
+library(dplyr)
+library(here)
+students <- read_csv(here("students.csv"),
+  col_types = cols(
+    id = col_integer(),
+    group = col_integer(),
+    birth_date = col_date(format = ""),
+    sex = col_factor()
+  )
+)
+
+```
+
+## Question 4
+
+```{r}
+library(tidyverse)
+
+grades <- read_delim(
+  "grades.csv",
+  delim = ";",
+  na = "$"
+)
+
+```
+
