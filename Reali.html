@@ -581,6 +581,9 @@ dbl (3): id, course_id, grade
 </div>
 </div>
 </section>
+</section>
+<section id="simple-grade-analysis" class="level1">
+<h1>3 Simple grade analysis</h1>
 <section id="question-10" class="level2">
 <h2 class="anchored" data-anchor-id="question-10">Question 10</h2>
 <div class="cell">
@@ -623,6 +626,10 @@ dbl (3): id, course_id, grade
 </section>
 <section id="question-12" class="level2">
 <h2 class="anchored" data-anchor-id="question-12">Question 12</h2>
+</section>
+</section>
+<section id="attendance-analysis" class="level1">
+<h1>4 Attendance analysis</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>grades_with_sem <span class="ot">&lt;-</span> grades <span class="sc">%&gt;%</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(courses, <span class="at">by =</span> <span class="st">"course_id"</span>)</span>
@@ -642,7 +649,6 @@ dbl (3): id, course_id, grade
 </div>
 </div>
 <p>boxplot comparison between the distribution of the grades of the 2 semesters</p>
-</section>
 <section id="question-13" class="level2">
 <h2 class="anchored" data-anchor-id="question-13">Question 13</h2>
 <div class="cell">
@@ -875,6 +881,210 @@ dbl (3): id, course_id, grade
 </div>
 </div>
 </div>
+</section>
+<section id="question-17" class="level2">
+<h2 class="anchored" data-anchor-id="question-17">Question 17</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>students_alchemy <span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> group, <span class="at">y =</span> nb_grades)) <span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Continuous x aesthetic
+ℹ did you forget `aes(group = ...)`?</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Reali_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="question-18" class="level2">
+<h2 class="anchored" data-anchor-id="question-18">Question 18</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>students_alchemy2 <span class="ot">&lt;-</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  students_alchemy <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(students <span class="sc">%&gt;%</span> <span class="fu">select</span>(id, sex), <span class="at">by =</span> <span class="st">"id"</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>students_alchemy2 <span class="sc">%&gt;%</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> nb_grades, <span class="at">fill =</span> sex)) <span class="sc">+</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> group)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Reali_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="grade-analysis" class="level1">
+<h1>5 Grade analysis</h1>
+<p>computing average grade per student per course</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>avg_per_course <span class="ot">&lt;-</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  grades <span class="sc">%&gt;%</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(grade)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">mean_grade =</span> <span class="fu">mean</span>(grade), <span class="at">.by =</span> <span class="fu">c</span>(id, course_id)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(courses, <span class="at">by =</span> <span class="st">"course_id"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="question-19" class="level2">
+<h2 class="anchored" data-anchor-id="question-19">Question 19</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>all_avg_wide <span class="ot">&lt;-</span></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  avg_per_course <span class="sc">%&gt;%</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, course, mean_grade) <span class="sc">%&gt;%</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> course,</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> mean_grade</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(students <span class="sc">%&gt;%</span> <span class="fu">select</span>(id, group), <span class="at">by =</span> <span class="st">"id"</span>)</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>all_avg_wide <span class="sc">%&gt;%</span></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">4</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 1%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 9%">
+<col style="width: 12%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 1%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">id</th>
+<th style="text-align: right;">Alchemy and Hermetic Philosophy</th>
+<th style="text-align: right;">Astrology and Celestial Navigation</th>
+<th style="text-align: right;">Combat and Martial Arts of Ancient Egypt</th>
+<th style="text-align: right;">Egyptian Mythology and Religion</th>
+<th style="text-align: right;">Hieroglyphics and Ancient Egyptian Script</th>
+<th style="text-align: right;">Medicine and Herbalism</th>
+<th style="text-align: right;">Mummification and Mortuary Rituals</th>
+<th style="text-align: right;">Nile River Navigation and Trade</th>
+<th style="text-align: right;">Pharaonic Law and Governance</th>
+<th style="text-align: right;">Pyramid Construction and Engineering</th>
+<th style="text-align: right;">group</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">14.47000</td>
+<td style="text-align: right;">15.00000</td>
+<td style="text-align: right;">12.166667</td>
+<td style="text-align: right;">9.75000</td>
+<td style="text-align: right;">14.66667</td>
+<td style="text-align: right;">10.46875</td>
+<td style="text-align: right;">12.125</td>
+<td style="text-align: right;">8.888889</td>
+<td style="text-align: right;">14.08333</td>
+<td style="text-align: right;">13.00000</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">14.19000</td>
+<td style="text-align: right;">14.07143</td>
+<td style="text-align: right;">9.916667</td>
+<td style="text-align: right;">11.62500</td>
+<td style="text-align: right;">14.66667</td>
+<td style="text-align: right;">10.85714</td>
+<td style="text-align: right;">12.250</td>
+<td style="text-align: right;">8.388889</td>
+<td style="text-align: right;">13.25000</td>
+<td style="text-align: right;">13.00000</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">66</td>
+<td style="text-align: right;">14.75556</td>
+<td style="text-align: right;">14.68750</td>
+<td style="text-align: right;">11.583333</td>
+<td style="text-align: right;">11.83333</td>
+<td style="text-align: right;">15.50000</td>
+<td style="text-align: right;">9.75000</td>
+<td style="text-align: right;">11.000</td>
+<td style="text-align: right;">9.500000</td>
+<td style="text-align: right;">14.60000</td>
+<td style="text-align: right;">11.33333</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">103</td>
+<td style="text-align: right;">15.83000</td>
+<td style="text-align: right;">14.56250</td>
+<td style="text-align: right;">11.833333</td>
+<td style="text-align: right;">10.50000</td>
+<td style="text-align: right;">14.16667</td>
+<td style="text-align: right;">10.75000</td>
+<td style="text-align: right;">12.000</td>
+<td style="text-align: right;">9.722222</td>
+<td style="text-align: right;">13.58333</td>
+<td style="text-align: right;">13.44444</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="question-20" class="level2">
+<h2 class="anchored" data-anchor-id="question-20">Question 20</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>avg_two <span class="ot">&lt;-</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  avg_per_course <span class="sc">%&gt;%</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(course <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Alchemy and Hermetic Philosophy"</span>,</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"Egyptian Mythology and Religion"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(students <span class="sc">%&gt;%</span> <span class="fu">select</span>(id, group), <span class="at">by =</span> <span class="st">"id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg =</span> <span class="fu">mean</span>(mean_grade),</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.by =</span> <span class="fu">c</span>(group, course)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(avg_two, <span class="fu">aes</span>(<span class="at">x =</span> group, <span class="at">y =</span> avg, <span class="at">fill =</span> course)) <span class="sc">+</span></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Reali_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="question-21" class="level2">
+<h2 class="anchored" data-anchor-id="question-21">Question 21</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>two_courses <span class="ot">&lt;-</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  all_avg_wide <span class="sc">%&gt;%</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="st">`</span><span class="at">Alchemy and Hermetic Philosophy</span><span class="st">`</span>,</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>         <span class="st">`</span><span class="at">Egyptian Mythology and Religion</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(two_courses<span class="sc">$</span><span class="st">`</span><span class="at">Alchemy and Hermetic Philosophy</span><span class="st">`</span>,</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    two_courses<span class="sc">$</span><span class="st">`</span><span class="at">Egyptian Mythology and Religion</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4757807</code></pre>
+</div>
+</div>
+</section>
+<section id="question-22" class="level2">
+<h2 class="anchored" data-anchor-id="question-22">Question 22</h2>
 </section>
 </section>
 

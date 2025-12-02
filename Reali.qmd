@@ -331,24 +331,35 @@ all_avg_wide %>%
 ## Question 20
 
 ```{r}
-course_ids <- courses %>%
-  filter(course %in% c("Alchemy and Hermetic Philosophy",
-                            "Egyptian Mythology and Religion")) %>%
-  select(course, course_id)
-
 avg_two <-
   avg_per_course %>%
-  inner_join(course_ids, by = "course_id") %>%
+  filter(course %in% c("Alchemy and Hermetic Philosophy",
+                       "Egyptian Mythology and Religion")) %>%
   left_join(students %>% select(id, group), by = "id") %>%
-  summarise(avg = mean(mean_grade), .by = c(group, course_name))
+  summarise(
+    avg = mean(mean_grade),
+    .by = c(group, course)
+  )
 
-ggplot(avg_two, aes(x = group, y = avg, fill = course_name)) +
+ggplot(avg_two, aes(x = group, y = avg, fill = course)) +
   geom_col(position = "dodge")
-
 
 ```
 
 ## Question 21
+
+```{r}
+two_courses <-
+  all_avg_wide %>%
+  select(`Alchemy and Hermetic Philosophy`,
+         `Egyptian Mythology and Religion`) %>%
+  na.omit()
+
+cor(two_courses$`Alchemy and Hermetic Philosophy`,
+    two_courses$`Egyptian Mythology and Religion`)
+```
+
+## Question 22
 
 ```{r}
 
