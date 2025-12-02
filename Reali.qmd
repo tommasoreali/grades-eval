@@ -5,6 +5,10 @@ format: html
 editor: visual
 ---
 
+
+link to github repository: https://github.com/tommasoreali/grades-eval.git
+
+
 #1
 
 ## Question 1
@@ -360,6 +364,69 @@ cor(two_courses$`Alchemy and Hermetic Philosophy`,
 ```
 
 ## Question 22
+
+```{r}
+avg_22 <-
+  all_avg_wide %>%
+  select(id, group,
+         `Astrology and Celestial Navigation`,
+         `Alchemy and Hermetic Philosophy`)
+
+
+avg_22_long <-
+  avg_22 %>%
+  pivot_longer(
+    cols = -c(id, group),
+    names_to = "course",
+    values_to = "mean_grade"
+  )
+
+ggplot(avg_22_long, aes(x = group, y = mean_grade, fill = course)) +
+  geom_boxplot()
+
+```
+
+## question 23
+
+```{r}
+
+final_grades <-
+  avg_per_course %>%
+  summarise(final_grade = mean(mean_grade), .by = id) %>%
+  left_join(students %>% select(id, group, sex), by = "id") %>%
+  select(id, group, sex, final_grade) %>%
+  arrange(desc(final_grade))
+
+final_grades %>%
+  slice_head(n = 5) %>%
+  kable()
+
+```
+
+## Question 24
+
+```{r}
+ggplot(final_grades, aes(x= final_grade, color = group)) + 
+  geom_density() +
+  labs(x= "Final grade", y= "Density")
+```
+
+## Question 25
+
+```{r}
+ggplot(final_grades, aes(x=final_grade, color =sex)) +
+  geom_density() +
+  facet_wrap(~group)+
+  labs(x= "Final grade", y = "Desnity")
+```
+
+## Qurstion 26
+
+```{r}
+
+```
+
+## Question 27
 
 ```{r}
 
