@@ -83,3 +83,109 @@ students %>%
 
 ```
 
+## Question 7
+
+```{r}
+library(lubridate)
+
+students <- students %>%
+  mutate(
+    age = time_length(today() - birth_date, unit = "year")
+  )
+
+ggplot(students, aes(x = age)) +
+  geom_histogram(bins = 20)
+
+```
+
+
+## Question 8
+
+```{r}
+students %>%
+  group_by(group) %>%
+  summarise(median_age = round(median(age))) %>%
+  knitr::kable()
+
+```
+
+## Question 9
+
+```{r}
+students %>%
+  group_by(group) %>%
+  slice_max(age, n = 1) %>%   # oldest student in each group
+  ungroup() %>%
+  select(id, sex, age, group) %>%
+  arrange(desc(age)) %>%
+  knitr::kable()
+```
+
+## Question 10
+
+```{r}
+n_grades <- grades %>%
+  filter(!is.na(grade)) %>%
+  nrow()
+
+n_grades
+```
+data set contains r n_grades
+
+## Question 11
+
+```{r}
+egypt_id <- courses %>%
+  filter(course == "Egyptian Mythology and Religion") %>%
+  pull(course_id)
+
+avg_egypt <- grades %>%
+  filter(course_id == egypt_id, !is.na(grade)) %>%
+  group_by(id) %>%
+  summarise(mean_grade = mean(grade)) %>%
+  inner_join(students, by = "id") %>%
+  group_by(group) %>%
+  summarise(average = mean(mean_grade))
+
+ggplot(avg_egypt, aes(x = group, y = average)) +
+  geom_col()
+
+```
+
+## Question 12
+
+```{r}
+grades_with_sem <- grades %>%
+  inner_join(courses, by = "course_id")
+
+ggplot(grades_with_sem, aes(x = factor(semester), y = grade)) +
+  geom_boxplot()
+
+```
+
+boxplot comparison between the distribution of the grades of the 2 semesters
+
+## Question 13
+
+```{r}
+
+```
+
+## Question 14
+
+```{r}
+
+```
+
+## Question 15
+
+```{r}
+
+```
+
+## Question 16
+
+```{r}
+
+```
+
