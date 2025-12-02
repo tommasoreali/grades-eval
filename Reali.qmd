@@ -118,7 +118,7 @@ students %>%
 ```{r}
 students %>%
   group_by(group) %>%
-  slice_max(age, n = 1) %>%   # oldest student in each group
+  slice_max(age, n = 1) %>% 
   ungroup() %>%
   select(id, sex, age, group) %>%
   arrange(desc(age)) %>%
@@ -135,7 +135,7 @@ n_grades <- grades %>%
 
 n_grades
 ```
-data set contains r n_grades
+data set contains `r n_grades` grades
 
 ## Question 11
 
@@ -172,6 +172,16 @@ ggplot(grades_with_sem, aes(x = factor(semester), y = grade)) +
 
 boxplot comparison between the distribution of the grades of the 2 semesters
 
+
+```{r}
+ggplot(grades_with_sem, aes(x = grade, color = factor(semester))) +
+  geom_density() +
+  labs(color = "Semester")
+
+```
+
+density plot comparison
+
 ## Question 13
 
 ```{r}
@@ -188,7 +198,7 @@ grades_per_student <-
     by = "id"
   )
 
-# quarto document
+# dataset representation
 grades_per_student |>
   slice_head(n = 5) |>
   kable()
@@ -273,9 +283,10 @@ dist_alchemy |>
 ## Question 17 
 
 ```{r}
-students_alchemy %>%
-  ggplot(aes(x = group, y = nb_grades)) +
-  geom_boxplot()
+ggplot(students_alchemy, aes(x= factor(group), y= nb_grades)) +
+  geom_jitter(width = 0.2, alpha =0.6) +
+  labs(x = "Group",
+       y= "Number of  grades in Alchemy and Hermetic Philosophy")
 
 ```
 
@@ -283,14 +294,14 @@ students_alchemy %>%
 ## Question 18
 
 ```{r}
-students_alchemy2 <-
-  students_alchemy %>%
-  left_join(students %>% select(id, sex), by = "id")
-
-students_alchemy2 %>%
-  ggplot(aes(x = nb_grades, fill = sex)) +
-  geom_histogram(binwidth = 1) +
-  facet_wrap(~ group)
+ggplot(grades_per_student,
+       aes(x = factor(group), y = n_grades, color = sex)) +
+  geom_jitter(width = 0.2, alpha = 0.6) +
+  labs(
+    x = "Group",
+    y = "nb of grades per student",
+    color = "Sex"
+  )
 
 
 ```
@@ -298,7 +309,7 @@ students_alchemy2 %>%
 # 5 Grade analysis
 
 
-computing average grade per student per course
+computing average grade per course per student 
 
 ```{r}
 avg_per_course <-
