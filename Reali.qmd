@@ -218,7 +218,6 @@ grades_per_student |>
 ## Question 14
 
 ```{r}
-library(ggplot2)
 
 grades_per_student |>
   ggplot(aes(x = n_grades, fill = sex)) +
@@ -346,18 +345,13 @@ all_avg_wide %>%
 ## Question 20
 
 ```{r}
-avg_two <-
-  avg_per_course %>%
-  filter(course %in% c("Alchemy and Hermetic Philosophy",
-                       "Egyptian Mythology and Religion")) %>%
-  left_join(students %>% select(id, group), by = "id") %>%
-  summarise(
-    avg = mean(mean_grade),
-    .by = c(group, course)
-  )
 
-ggplot(avg_two, aes(x = group, y = avg, fill = course)) +
-  geom_col(position = "dodge")
+ggplot(two_courses,
+       aes(x= `Egyptian Mythology and Religion`, y = `Alchemy and Hermetic Philosophy`)) +
+  geom_point(alpha = 0.6) +
+  coord_equal() +
+  theme_bw()+
+  labs()
 
 ```
 
@@ -377,23 +371,27 @@ cor(two_courses$`Alchemy and Hermetic Philosophy`,
 ## Question 22
 
 ```{r}
-avg_22 <-
-  all_avg_wide %>%
-  select(id, group,
-         `Astrology and Celestial Navigation`,
-         `Alchemy and Hermetic Philosophy`)
-
-
-avg_22_long <-
-  avg_22 %>%
-  pivot_longer(
-    cols = -c(id, group),
-    names_to = "course",
-    values_to = "mean_grade"
+avg_per_course %>%
+  filter(course %in% c("Astrology and Celestial Navigation",
+                       "Alchemy and Hermetic Philosophy")) %>%
+  select(id, course, mean_grade) %>%
+  tidyr::pivot_wider(
+    names_from = course,
+    values_from = mean_grade
+  ) %>%
+  left_join(students %>% select(id, group), by = "id") %>%
+  ggplot(aes(x = `Astrology and Celestial Navigation`,
+             y = `Alchemy and Hermetic Philosophy`,
+             color = factor(group))) +
+  geom_point(alpha = 0.8, size = 2) +
+  coord_equal() +
+  theme_bw() +
+  labs(
+    x = "Average grade in Astrology and Celestial Navigation",
+    y = "Average grade in Alchemy and Hermetic Philosophy",
+    color = "Group"
   )
 
-ggplot(avg_22_long, aes(x = group, y = mean_grade, fill = course)) +
-  geom_boxplot()
 
 ```
 
@@ -417,21 +415,35 @@ final_grades %>%
 ## Question 24
 
 ```{r}
-ggplot(final_grades, aes(x= final_grade, color = group)) + 
+library(ggplot2)
+
+ggplot(final_grades, aes(x = final_grade, color = factor(group))) +
   geom_density() +
-  labs(x= "Final grade", y= "Density")
+  labs(
+    x = "Final grade",
+    y = "Density",
+    color = "Group"
+  )
+
 ```
 
 ## Question 25
 
 ```{r}
-ggplot(final_grades, aes(x=final_grade, color =sex)) +
+ggplot(final_grades,
+       aes(x = final_grade,
+           color = sex)) +
   geom_density() +
-  facet_wrap(~group)+
-  labs(x= "Final grade", y = "Desnity")
+  facet_wrap(~ group) +
+  labs(
+    x = "Final grade",
+    y = "Density",
+    color = "Sex"
+  )
+
 ```
 
-## Qurstion 26
+## Question 26
 
 ```{r}
 
