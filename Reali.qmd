@@ -120,6 +120,7 @@ students %>%
   arrange(desc(age)) %>%
   knitr::kable()
 ```
+# 3 Simple grade analysis
 
 ## Question 10
 
@@ -154,6 +155,8 @@ ggplot(avg_egypt, aes(x = group, y = average)) +
 
 ## Question 12
 
+# 4 Attendance analysis
+
 ```{r}
 grades_with_sem <- grades %>%
   inner_join(courses, by = "course_id")
@@ -168,22 +171,184 @@ boxplot comparison between the distribution of the grades of the 2 semesters
 ## Question 13
 
 ```{r}
+grades_per_student <-
+  grades |>
+  filter(!is.na(grade)) |>
+  summarise(
+    n_grades = n(),
+    .by = id
+  ) |>
+  left_join(
+    students |>
+      select(id, group, sex),
+    by = "id"
+  )
 
+# quarto document
+grades_per_student |>
+  slice_head(n = 5) |>
+  kable()
+
+# markdown table
+grades_per_student |>
+  summarise(
+    min_grades    = min(n_grades),
+    max_grades    = max(n_grades),
+    mean_grades   = mean(n_grades),
+    median_grades = median(n_grades)
+  ) |>
+  kable()
 ```
+
 
 ## Question 14
 
 ```{r}
+library(ggplot2)
 
+grades_per_student |>
+  ggplot(aes(x = n_grades, fill = sex)) +
+  geom_histogram(binwidth = 1, position = "dodge")
 ```
 
 ## Question 15
 
 ```{r}
 
+alchemy_id <-
+  courses |>
+  filter(course == "Alchemy and Hermetic Philosophy") |>
+  pull(course_id)
+
+alchemy_counts <-
+  grades |>
+  filter(course_id == alchemy_id, !is.na(grade)) |>
+  summarise(
+    nb_grades = n(),
+    .by = id
+  )
+
+
+students_alchemy <-
+  students |>
+  select(id, group) |>
+  left_join(alchemy_counts, by = "id") |>
+  mutate(
+    nb_grades = if_else(is.na(nb_grades), 0L, nb_grades)
+  )
+
+
+students_alchemy |>
+  slice_head(n = 5) |>
+  kable()
+
 ```
 
 ## Question 16
+
+```{r}
+
+dist_alchemy <-
+  students_alchemy |>
+  summarise(
+    n_students = n(),
+    .by = nb_grades
+  )
+
+dist_alchemy |>
+  kable()
+
+
+dist_alchemy |>
+  ggplot(aes(x = nb_grades, y = n_students)) +
+  geom_col()
+
+```
+
+
+## Question 17 
+
+```{r}
+students_alchemy %>%
+  ggplot(aes(x = group, y = nb_grades)) +
+  geom_boxplot()
+
+```
+
+
+## Question 18
+
+```{r}
+students_alchemy2 <-
+  students_alchemy %>%
+  left_join(students %>% select(id, sex), by = "id")
+
+students_alchemy2 %>%
+  ggplot(aes(x = nb_grades, fill = sex)) +
+  geom_histogram(binwidth = 1) +
+  facet_wrap(~ group)
+
+
+```
+
+# 5 Grade analysis
+
+
+computing average grade per student per course
+
+```{r}
+avg_per_course <-
+  grades %>%
+  filter(!is.na(grade)) %>%
+  summarise(mean_grade = mean(grade), .by = c(id, course_id)) %>%
+  left_join(courses, by = "course_id")
+
+```
+
+
+## Question 19
+
+```{r}
+library(tidyr)
+
+all_avg_wide <-
+  avg_per_course %>%
+  select(id, course, mean_grade) %>%
+  pivot_wider(
+    names_from = course,
+    values_from = mean_grade
+  ) %>%
+  left_join(students %>% select(id, group), by = "id")
+
+all_avg_wide %>%
+  slice_head(n = 4) %>%
+  knitr::kable()
+
+
+```
+
+
+## Question 20
+
+```{r}
+course_ids <- courses %>%
+  filter(course %in% c("Alchemy and Hermetic Philosophy",
+                            "Egyptian Mythology and Religion")) %>%
+  select(course, course_id)
+
+avg_two <-
+  avg_per_course %>%
+  inner_join(course_ids, by = "course_id") %>%
+  left_join(students %>% select(id, group), by = "id") %>%
+  summarise(avg = mean(mean_grade), .by = c(group, course_name))
+
+ggplot(avg_two, aes(x = group, y = avg, fill = course_name)) +
+  geom_col(position = "dodge")
+
+
+```
+
+## Question 21
 
 ```{r}
 
